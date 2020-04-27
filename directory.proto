@@ -1,0 +1,62 @@
+syntax = "proto3";
+package directory;
+
+service MixDirectory
+{
+    // used by mixes to register themselves for the first time,
+    // includes a key exchange for authentication of updates
+    rpc Register(RegisterRequest) returns (RegisterReply);
+
+    // push new ephemeral DH public keys of mixes to the directory service
+    rpc AddStaticDh(stream DhMessage) returns (stream DhReply);
+
+    // query the directory service
+    rpc QueryDirectory(DirectoryRequest) returns (stream DirectoryReply);
+}
+
+message RegisterRequest
+{
+    string fingerprint = 1;
+    string address = 2;
+    uint32 port = 3;
+    bytes public_dh = 4;
+}
+
+message RegisterReply {
+    bytes public_dh = 1;
+}
+
+message DhMessage
+{
+    string fingerprint = 1;
+    uint32 counter = 2;
+    bytes public_dh = 3;
+    bytes auth_tag = 4;
+}
+
+message DhReply
+{
+    uint32 counter = 1;
+    uint32 epoch = 2;
+}
+
+message DirectoryEntry
+{
+    string address = 1;
+    uint32 port = 2;
+    bytes public_dh = 3;
+}
+
+message DirectoryRequest
+{
+    // only query directory starting with the given epoch
+    uint32 min_epoch = 1;
+}
+
+message DirectoryReply
+{
+    uint32 epoch = 1;
+    uint64 setup_start = 2;
+    uint64 communication_start = 3;
+    repeated DirectoryEntry mixes = 4;
+}
