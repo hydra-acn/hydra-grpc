@@ -1,7 +1,7 @@
 syntax = "proto3";
 package directory;
 
-service MixDirectory
+service Directory
 {
     // used by mixes to register themselves for the first time,
     // includes a key exchange for authentication of updates
@@ -19,11 +19,13 @@ message RegisterRequest
     string fingerprint = 1;
     string address = 2;
     uint32 port = 3;
+    // for key exchange mix <-> directory service
     bytes public_dh = 4;
 }
 
 message RegisterReply
 {
+    // for key exchange mix <-> directory service
     bytes public_dh = 1;
 }
 
