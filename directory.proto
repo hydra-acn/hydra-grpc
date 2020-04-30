@@ -7,8 +7,8 @@ service Directory
     // includes a key exchange for authentication of updates
     rpc Register(RegisterRequest) returns (RegisterReply);
 
-    // push new ephemeral DH public keys of mixes to the directory service
-    rpc AddStaticDh(stream DhMessage) returns (stream DhReply);
+    // push new ephemeral DH public key (mix) to the directory service
+    rpc AddStaticDh(DhMessage) returns (DhReply);
 
     // query the directory service, one DirectoryReply per epoch
     rpc QueryDirectory(DirectoryRequest) returns (stream DirectoryReply);
@@ -16,6 +16,7 @@ service Directory
 
 message RegisterRequest
 {
+    // fingerprint is a hash of public_dh and used for identification of further requests
     string fingerprint = 1;
     string address = 2;
     uint32 port = 3;
