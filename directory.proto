@@ -10,8 +10,8 @@ service Directory
     // push new ephemeral DH public key (mix) to the directory service
     rpc AddStaticDh(DhMessage) returns (DhReply);
 
-    // query the directory service, one DirectoryReply per epoch
-    rpc QueryDirectory(DirectoryRequest) returns (stream DirectoryReply);
+    // query the directory service, one EpochInfo per epoch
+    rpc QueryDirectory(DirectoryRequest) returns (stream EpochInfo);
 }
 
 message RegisterRequest
@@ -44,7 +44,7 @@ message DhReply
     uint32 epoch_no = 2;
 }
 
-message DirectoryEntry
+message MixInfo
 {
     string address = 1;
     uint32 port = 2;
@@ -58,7 +58,7 @@ message DirectoryRequest
 }
 
 // absolute times are given in Unix/POSIX time, relative times are given in seconds
-message DirectoryReply
+message EpochInfo
 {
     uint32 epoch_no = 1;
     uint32 path_length = 2;
@@ -74,5 +74,5 @@ message DirectoryReply
     uint32 round_waiting = 7;
 
     // the actual directory
-    repeated DirectoryEntry mixes = 8;
+    repeated MixInfo mixes = 8;
 }
