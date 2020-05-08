@@ -10,8 +10,8 @@ service Directory
     // push new ephemeral DH public key (mix) to the directory service
     rpc AddStaticDh(DhMessage) returns (DhReply);
 
-    // query the directory service, one EpochInfo per epoch
-    rpc QueryDirectory(DirectoryRequest) returns (stream EpochInfo);
+    // query the directory service
+    rpc QueryDirectory(DirectoryRequest) returns (DirectoryReply);
 }
 
 message RegisterRequest
@@ -44,17 +44,16 @@ message DhReply
     uint32 epoch_no = 2;
 }
 
-message MixInfo
-{
-    string address = 1;
-    uint32 port = 2;
-    bytes public_dh = 3;
-}
-
 message DirectoryRequest
 {
     // only query directory starting with the given epoch number
     uint32 min_epoch_no = 1;
+}
+
+message DirectoryReply
+{
+    // epoch infos are sorted (ascending) by epoch number
+    repeated EpochInfo epochs = 1;
 }
 
 // absolute times are given in Unix/POSIX time, relative times are given in seconds
@@ -68,11 +67,21 @@ message EpochInfo
     uint64 communication_start_time = 4;
     // attention: last round in each epoch is reserved for receiving only!
     uint32 number_of_rounds = 5;
-    // time between send and receive for one round
+    // time between send and receive (theoretical time) for one round
+    // attention: receive is additionally delayed by transmission and propagation delay between entry mix and client
     uint32 round_duration = 6;
-    // time between two rounds, i.e. between receive and next send
+    // time between two rounds, i.e. between receive (theoretical time) and next send
     uint32 round_waiting = 7;
 
     // the actual directory
     repeated MixInfo mixes = 8;
 }
+
+message MixInfo
+{
+    string address = 1;
+    uint32 port = 2;
+    bytes public_dh = 3;
+}
+
+
