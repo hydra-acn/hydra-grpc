@@ -18,7 +18,9 @@ message RegisterRequest
 {
     // fingerprint is a hash of public_dh and used for identification of further requests
     string fingerprint = 1;
-    string address = 2;
+    // address in big endian (network) order; v4 and v6 supported
+    bytes address = 2;
+    // remark: gRPC does not support uint16 ...
     uint32 port = 3;
     // for key exchange mix <-> directory service
     bytes public_dh = 4;
@@ -79,7 +81,9 @@ message EpochInfo
 
 message MixInfo
 {
-    string address = 1;
+    // address in big endian (network) order; v4 and v6 supported
+    bytes address = 1;
+    // remark: gRPC does not support uint16 ...
     uint32 port = 2;
     bytes public_dh = 3;
 }
