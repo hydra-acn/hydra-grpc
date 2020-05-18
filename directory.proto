@@ -20,10 +20,11 @@ message RegisterRequest
     string fingerprint = 1;
     // address in big endian (network) order; v4 and v6 supported
     bytes address = 2;
-    // remark: gRPC does not support uint16 ...
-    uint32 port = 3;
+    // remark: protobuf does not support uint16 ...
+    uint32 entry_port = 3;
+    uint32 relay_port = 4;
     // for key exchange mix <-> directory service
-    bytes public_dh = 4;
+    bytes public_dh = 5;
 }
 
 message RegisterReply
@@ -69,10 +70,10 @@ message EpochInfo
     uint64 communication_start_time = 4;
     // attention: last round in each epoch is reserved for receiving only!
     uint32 number_of_rounds = 5;
-    // time between send and receive (theoretical time) for one round
-    // attention: receive is additionally delayed by transmission and propagation delay between entry mix and client
+    // round duration -> time between send and receive for one round
+    // the client should poll for new messages at this time point
     uint32 round_duration = 6;
-    // time between two rounds, i.e. between receive (theoretical time) and next send
+    // time between two rounds, i.e. between receive (poll time) and next send
     uint32 round_waiting = 7;
 
     // the actual directory
@@ -83,9 +84,12 @@ message MixInfo
 {
     // address in big endian (network) order; v4 and v6 supported
     bytes address = 1;
-    // remark: gRPC does not support uint16 ...
-    uint32 port = 2;
-    bytes public_dh = 3;
+    // remark: protobuf does not support uint16 ...
+    // use entry_port to contact your entry mix
+    uint32 entry_port = 2;
+    // use relay_port when specifying next hop in setup packets
+    uint32 relay_port = 3;
+    bytes public_dh = 4;
 }
 
 
