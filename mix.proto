@@ -10,7 +10,8 @@ service SimpleRelay
     // -> poll at round end (round start + round_duration)
     rpc Receive(SimplePoll) returns (CellVector);
 
-    // alternative (instead of Send/Receive), call before round start
+    // alternative to Send/Receive: long polling
+    // call before round start and get response at round end
     // if this works without affecting power consumption (sleep states?),
     // this is the preferred way
     // attention: timeout/deadline at client has to be long enough
