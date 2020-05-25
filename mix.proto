@@ -10,6 +10,9 @@ service SimpleRelay
 
     // poll cells (again without onion-encryption) based on tokens
     // -> poll at round end (round start + round_duration)
+    // if no cells match, returns one dummy cell
+    // attention: round numbers will be different compared to the real mix
+    // implementation and should not be used
     rpc Receive(SimplePoll) returns (CellVector);
 
     // alternative to Send/Receive: long polling
@@ -18,7 +21,7 @@ service SimpleRelay
     // this is the preferred way
     // attention: timeout/deadline at client has to be long enough
     // (round_duration + epsilon)
-    // remark: use dummy cell at last round of epoch
+    // remark: send dummy cell at last round of epoch
     rpc SendAndLongPoll(LongPoll) returns (CellVector);
 }
 
