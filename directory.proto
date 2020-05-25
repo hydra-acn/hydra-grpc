@@ -9,6 +9,9 @@ service Directory
     // includes a key exchange for authentication of updates
     rpc Register(RegisterRequest) returns (RegisterReply);
 
+    // unregister to signal that a mix is no longer available
+    rpc Unregister(UnregisterRequest) returns (UnregisterAck);
+
     // push new ephemeral DH public key (mix) to the directory service
     rpc AddStaticDh(DhMessage) returns (DhReply);
 
@@ -19,6 +22,7 @@ service Directory
 message RegisterRequest
 {
     // fingerprint is a hash of public_dh and used for identification of further requests
+    // TODO it should be a hash of public_dh, atm its an arbitrary string
     string fingerprint = 1;
     // address in big endian (network) order; v4 and v6 supported
     bytes address = 2;
@@ -34,6 +38,14 @@ message RegisterReply
     // for key exchange mix <-> directory service
     bytes public_dh = 1;
 }
+
+message UnregisterRequest
+{
+    string fingerprint = 1;
+    bytes auth_tag = 2;
+}
+
+message UnregisterAck { };
 
 message DhMessage
 {
@@ -92,6 +104,7 @@ message MixInfo
     // use relay_port when specifying next hop in setup packets
     uint32 relay_port = 3;
     bytes public_dh = 4;
+    // not really necessary, mainly useful for concise implementation of
+    // unregister at the directory and for debugging
+    string fingerprint = 5;
 }
-
-
