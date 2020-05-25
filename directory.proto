@@ -1,6 +1,8 @@
 syntax = "proto3";
 package directory;
 
+option java_package = "com.swp.directory"
+
 service Directory
 {
     // used by mixes to register themselves for the first time,
