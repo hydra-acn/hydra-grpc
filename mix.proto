@@ -6,24 +6,11 @@ option java_outer_classname = "MixOuterClass";
 
 service SimpleRelay
 {
-    // send a cell without onion-encryption (send before round start!)
-    rpc Send(Cell) returns (SendAck);
-
-    // poll cells (again without onion-encryption) based on tokens
-    // -> poll at round end (round start + round_duration)
-    // if no cells match, returns one dummy cell
-    // attention: round numbers will be different compared to the real mix
-    // implementation and should not be used
-    rpc Receive(SimplePoll) returns (CellVector);
-
-    // alternative to Send/Receive: long polling
-    // call before round start and get response at round end
-    // if this works without affecting power consumption (sleep states?),
-    // this is the preferred way
-    // attention: timeout/deadline at client has to be long enough
-    // (round_duration + epsilon)
-    // remark: send dummy cell at last round of epoch
-    rpc SendAndLongPoll(LongPoll) returns (CellVector);
+    // send a cell without onion-encryption and receive cells based on the
+    // specified tokens in return
+    // call this anytime between end of round r and start of round r+1
+    // (see "round_duration" and "round_waiting" from directory service)
+    rpc SendAndReceive(RelayRequest) returns (CellVector);
 }
 
 message Cell
@@ -46,30 +33,17 @@ message Cell
     bytes onion = 3;
 }
 
-message CellVector
+message RelayRequest
 {
-    repeated Cell cells = 1;
-}
-
-message SendAck { }
-
-message SimplePoll
-{
-    // use the same circuit id as for sending to avoid getting your own cells back
-    fixed64 circuit_id = 1;
-    // poll for all cells matching the specified tokens
-    repeated fixed64 tokens = 2;
-}
-
-message TokenVector
-{
-    repeated fixed64 tokens = 1;
-}
-
-message LongPoll
-{
-    // send this cell
+    // send this cell (dummy if you have no real cell to send)
+    // for the simple relay, each client should use a unique circuit id and
+    // stick to it to avoid getting its own cells back
     Cell cell = 1;
     // receive cells with matching tokens in return
     repeated fixed64 tokens = 2;
+}
+
+message CellVector
+{
+    repeated Cell cells = 1;
 }
