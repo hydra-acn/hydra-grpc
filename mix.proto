@@ -6,12 +6,72 @@ option java_outer_classname = "MixOuterClass";
 
 service SimpleRelay
 {
-    // send a cell without onion-encryption and receive cells based on the
-    // specified tokens in return
-    // call this anytime between end of round r and start of round r+1
+    // send a cell without onion-encryption and receive all new cells based on
+    // the specified tokens in return
+    // call this anytime between end of round r and start of round r + 1
     // (see "round_duration" and "round_waiting" from directory service)
     rpc SendAndReceive(RelayRequest) returns (CellVector);
 }
+
+service Mix
+{
+    // setup a circuit
+    // attention: may fail with "ALREADY_EXISTS" when the circuit_id is
+    // already in use one the mix -> send again with new random circuit id
+    rpc SetupCircuit(SetupPacket) returns (SetupAck);
+
+    // send an onion-encrypted cell and receive all new cells for the same
+    // circuit in return
+    // for sending the cell of round r + 1, call this anytime between end of
+    // round r and start of round r + 1 (see "round_duration" and
+    // "round_waiting" from directory service)
+    // note: entry mix only
+    rpc SendAndReceive(Cell) returns (CellVector);
+
+    // poll for missed cells on circuits from past epochs
+    // note: entry mix only
+    rpc LatePoll(LatePollRequest) returns (CellVector);
+
+    // syncronized forwarding of cells along circuits
+    // note: not for entry mixes
+    // TODO streaming RPC might be more efficient
+    rpc Relay(Cell) returns (RelayAck);
+}
+
+message SetupPacket
+{
+    uint32 epoch_no = 1;
+    // circuit id must be random to minimize chance of collisions
+    fixed64 circuit_id = 2;
+    // client's public x448 DH key for the current layer (56 bytes)
+    bytes public_dh = 3;
+    // nonce for AES-256-GCM (see onion), length must be 96 bit = 12 byte
+    bytes nonce = 4;
+    // authentication tag for AES-256-GCM (see onion), length must be 128 bit = 16 byte
+    bytes auth_tag = 5;
+    // onion encrypted part (AES-256-GCM) as specified by Hydra, i.e. recursive definition:
+    // * base case: 256 tokens as further specified in the "Cell" message type;
+    //   fill with dummy tokens and randomize order!
+    // * recursive case:
+    //      * 128 bit address information for next hop as one IPv6 address in
+    //        big-endian (network) order; IPv4 addresses must be mapped as
+    //        described here:
+    //        http://www.tcpipguide.com/free/t_IPv6IPv4AddressEmbedding-2.htm
+    //        example: 141.24.207:69 -> ::FFFF::141.24.207:69
+    //      * 16 bit port information for next hop, little-endian order
+    //      * 56 byte x448 DH key for the next layer
+    //      * 96 bit nonce for the next layer
+    //      * 128 bit authentication tag for the next layer
+    //      * next layer -> recurse
+    // note: length of the onion field must be
+    //        256 * 8 byte + (l - 1) * 102 byte, with l = path length
+    // when sending to the entry mix
+    bytes onion = 6;
+}
+
+message SetupAck { }
+
+message RelayAck { }
 
 message Cell
 {
@@ -41,6 +101,12 @@ message RelayRequest
     Cell cell = 1;
     // receive cells with matching tokens in return
     repeated fixed64 tokens = 2;
+}
+
+message LatePollRequest
+{
+    // poll for any cells received on the specified circuits
+    repeated fixed64 circuit_ids = 1;
 }
 
 message CellVector
