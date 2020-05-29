@@ -30,8 +30,9 @@ message RegisterRequest
     // remark: protobuf does not support uint16 ...
     uint32 entry_port = 3;
     uint32 relay_port = 4;
+    uint32 rendezvous_port = 5;
     // for key exchange mix <-> directory service
-    bytes public_dh = 5;
+    bytes public_dh = 6;
 }
 
 message RegisterReply
@@ -106,6 +107,8 @@ message MixInfo
     uint32 entry_port = 2;
     // use relay_port when specifying next hop in setup packets
     uint32 relay_port = 3;
+    // port when acting as rendezvous node
+    uint32 rendezvous_port = 6;
     bytes public_dh = 4;
     // not really necessary, mainly useful for concise implementation of
     // unregister at the directory and for debugging
