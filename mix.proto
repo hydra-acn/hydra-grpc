@@ -57,7 +57,7 @@ message SetupPacket
     //        big-endian (network) order; IPv4 addresses must be mapped as
     //        described here:
     //        http://www.tcpipguide.com/free/t_IPv6IPv4AddressEmbedding-2.htm
-    //        example: 141.24.207:69 -> ::FFFF::141.24.207:69
+    //        example: 141.24.207:69 -> ::0xFFFF::141.24.207:69
     //      * 16 bit port information for next hop, little-endian order
     //      * 56 byte x448 DH key for the next layer
     //      * 96 bit nonce for the next layer
