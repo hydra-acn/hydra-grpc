@@ -43,7 +43,12 @@ message SetupPacket
     uint32 epoch_no = 1;
     // circuit id must be random to minimize chance of collisions
     fixed64 circuit_id = 2;
-    // client's public x448 DH key for the current layer (56 bytes)
+    // client's public x448 DH key for the current layer (56 bytes);
+    // let the shared secret be s -> derive keys for symmetric ciphers using the
+    // HKDF construction from RFC 5869 with SHA256 as hash function as follows:
+    // (signature is hkdf(master_key: [uint8], salt: [uint8], info: uint8)
+    // * 32 byte key for AES-256-GCM for the onion part: hkdf(s, nonce, 42)
+    // * 128 byte key for Threefish in cells: hkdf(s, nonce, 43)
     bytes public_dh = 3;
     // nonce for AES-256-GCM (see onion), length must be 96 bit = 12 byte
     bytes nonce = 4;
