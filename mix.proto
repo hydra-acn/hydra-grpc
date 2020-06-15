@@ -36,6 +36,10 @@ service Mix
     // note: not for entry mixes
     // TODO streaming RPC might be more efficient
     rpc Relay(Cell) returns (RelayAck);
+
+    // inject cell into downstream circuit, called by rendezvous mixes
+    // circuit id of the cell must be set accordingly before the call
+    rpc Inject(Cell) returns (InjectAck);
 }
 
 message SetupPacket
@@ -77,6 +81,8 @@ message SetupPacket
 message SetupAck { }
 
 message RelayAck { }
+
+message InjectAck { }
 
 message Cell
 {

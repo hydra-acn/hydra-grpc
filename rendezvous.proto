@@ -1,0 +1,29 @@
+syntax = "proto3";
+package mix;
+
+import "mix.proto";
+
+service Rendezvous
+{
+    // end of setup phase: subscription at rendezvous nodes
+    rpc Subscribe(SubscriptionVector) returns (SubscribeAck);
+
+    // relay cell via rendezvous nodes each round
+    rpc Publish(Cell) returns (PublishAck);
+}
+
+message SubscriptionVector
+{
+    fixed32 epoch_no = 1;
+    repeated Subscription subs = 2;
+}
+
+message Subscription
+{
+    fixed64 circuit_id = 1;
+    repeated fixed64 tokens = 2;
+}
+
+message SubscribeAck { }
+
+message PublishAck { }
