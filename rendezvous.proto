@@ -15,7 +15,11 @@ service Rendezvous
 message SubscriptionVector
 {
     fixed32 epoch_no = 1;
-    repeated Subscription subs = 2;
+    // address for injection
+    bytes addr = 2;
+    // port for injection; note: gRPC has no uint16
+    uint32 port = 3;
+    repeated Subscription subs = 4;
 }
 
 message Subscription
