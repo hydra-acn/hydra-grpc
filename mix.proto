@@ -21,11 +21,18 @@ service Mix
     rpc SetupCircuit(SetupPacket) returns (SetupAck);
 
     // send an onion-encrypted cell and receive all new cells for the same
-    // circuit in return
+    // circuit in return (entry mix only)
     // for sending the cell of round r + 1, call this anytime between end of
     // round r and start of round r + 1 (see "round_duration" and
     // "round_waiting" from directory service)
-    // note: entry mix only
+    // note on last round of an epoch:
+    // * send a dummy cell as it will be dropped anyway
+    // * you will receive a NACK of dropped cells addressed to you, with the
+    //  following format in cell.onion:
+    //      * first byte encodes the number n of dropped cells
+    //      * the remaining 7 bytes of (arg, cmd) should be 0
+    //      * the payload contains the n tokens at the front, 8 bytes each
+    //        (rest is garbage)
     rpc SendAndReceive(Cell) returns (CellVector);
 
     // poll for missed cells on circuits from past epochs
