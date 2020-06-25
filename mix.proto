@@ -31,7 +31,8 @@ service Mix
     //  following format in cell.onion:
     //      * first byte encodes the number n of dropped cells
     //      * the remaining 7 bytes of (arg, cmd) are 0 (otherwise, the NACK is broken)
-    //      * the payload contains the n tokens at the front, 8 bytes each
+    //      * the remaining bytes (token, payload interpreted as one byte array)
+    //        contain the n tokens of the dropped cells at the front, 8 bytes each
     //        (rest is garbage)
     rpc SendAndReceive(Cell) returns (CellVector);
 
