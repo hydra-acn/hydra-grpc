@@ -28,7 +28,7 @@ service Mix
     // note on last round of an epoch:
     // * send a dummy cell as it will be dropped anyway
     // * you will receive a NACK of dropped cells addressed to you, with the
-    //  following format in cell.onion:
+    //  following format in cell.onion (last cell in CellVector):
     //      * first byte encodes the number n of dropped cells
     //      * the remaining 7 bytes of (arg, cmd) are 0 (otherwise, the NACK is broken)
     //      * the remaining bytes (token, payload interpreted as one byte array)
