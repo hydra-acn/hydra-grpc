@@ -42,7 +42,6 @@ service Mix
 
     // syncronized forwarding of cells along circuits
     // note: not for entry mixes
-    // TODO streaming RPC might be more efficient
     rpc Relay(Cell) returns (RelayAck);
 
     // inject cell into downstream circuit, called by rendezvous mixes
