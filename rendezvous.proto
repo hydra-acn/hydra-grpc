@@ -9,7 +9,7 @@ service Rendezvous
     rpc Subscribe(SubscriptionVector) returns (SubscribeAck);
 
     // relay cell via rendezvous nodes each round
-    rpc Publish(Cell) returns (PublishAck);
+    rpc Publish(stream Cell) returns (PublishAck);
 }
 
 message SubscriptionVector

@@ -42,11 +42,11 @@ service Mix
 
     // syncronized forwarding of cells along circuits
     // note: not for entry mixes
-    rpc Relay(Cell) returns (RelayAck);
+    rpc Relay(stream Cell) returns (RelayAck);
 
     // inject cell into downstream circuit, called by rendezvous mixes
     // circuit id of the cell must be set accordingly before the call
-    rpc Inject(Cell) returns (InjectAck);
+    rpc Inject(stream Cell) returns (InjectAck);
 }
 
 message SetupPacket
