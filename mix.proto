@@ -25,19 +25,21 @@ service Mix
     // for sending the cell of round r + 1, call this anytime between end of
     // round r and start of round r + 1 (see "round_duration" and
     // "round_waiting" from directory service)
-    // note on last round of an epoch:
+    //
+    // note on the last round of an epoch:
     // * send a dummy cell as it will be dropped anyway
-    // * you will receive a NACK of dropped cells addressed to you, with the
-    //  following format in cell.onion (last cell in CellVector):
+    // * you receive the cell from the second to last round in return
+    // * use LatePoll to receive the NACK for the epoch
+    rpc SendAndReceive(Cell) returns (CellVector);
+
+    // poll for missed cells on circuits from past epochs (entry mix only)
+    // the epoch NACK (last cell of an epoch) should be pulled this way
+    // it has the following format in cell.onion (last cell in CellVector):
     //      * first byte encodes the number n of dropped cells
     //      * the remaining 7 bytes of (arg, cmd) are 0 (otherwise, the NACK is broken)
     //      * the remaining bytes (token, payload interpreted as one byte array)
     //        contain the n tokens of the dropped cells at the front, 8 bytes each
     //        (rest is garbage)
-    rpc SendAndReceive(Cell) returns (CellVector);
-
-    // poll for missed cells on circuits from past epochs
-    // note: entry mix only
     rpc LatePoll(LatePollRequest) returns (CellVector);
 
     // syncronized forwarding of cells along circuits
