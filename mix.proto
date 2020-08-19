@@ -26,7 +26,13 @@ service Mix
     // round r and start of round r + 1 (see "round_duration" and
     // "round_waiting" from directory service)
     //
-    // note on the last round of an epoch:
+    // notes on the first round of an epoch:
+    // * you have to send before the start of the communication phase (which also
+    //   is the start of the first round)
+    // * you will not receive a cell in return (not even a dummy) because it is
+    //   the first round after all
+    //
+    // notes on the last round of an epoch:
     // * send a dummy cell as it will be dropped anyway
     // * you receive the cell from the second to last round in return
     // * use LatePoll to receive the NACK for the epoch
