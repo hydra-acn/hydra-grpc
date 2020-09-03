@@ -20,6 +20,11 @@ service Mix
     // already in use one the mix -> send again with new random circuit id
     rpc SetupCircuit(SetupPacket) returns (SetupAck);
 
+    // streaming variant of circuit setup
+    // TODO robustness: ignores duplicate circuit ids at the moment and stops
+    // as soon as one bad setup packet is found
+    rpc StreamSetupCircuit(stream SetupPacket) returns (SetupAck);
+
     // send an onion-encrypted cell and receive all new cells for the same
     // circuit in return (entry mix only)
     // for sending the cell of round r + 1, call this anytime between end of
