@@ -6,26 +6,22 @@ import "mix.proto";
 service Rendezvous
 {
     // end of setup phase: subscription at rendezvous nodes
-    rpc Subscribe(SubscriptionVector) returns (SubscribeAck);
+    // TODO robustness: at the moment, the call returns immediately when facing
+    // a single bad Subscription
+    rpc Subscribe(stream Subscription) returns (SubscribeAck);
 
     // relay cell via rendezvous nodes each round
     rpc Publish(stream Cell) returns (PublishAck);
 }
 
-message SubscriptionVector
-{
-    fixed32 epoch_no = 1;
-    // address for injection
-    bytes addr = 2;
-    // port for injection; note: gRPC has no uint16
-    uint32 port = 3;
-    repeated Subscription subs = 4;
-}
-
 message Subscription
 {
-    fixed64 circuit_id = 1;
-    repeated fixed64 tokens = 2;
+    // address for injection
+    bytes addr = 1;
+    // port for injection; note: gRPC has no uint16
+    uint32 port = 2;
+    fixed64 circuit_id = 3;
+    repeated fixed64 tokens = 4;
 }
 
 message SubscribeAck { }
