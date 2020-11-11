@@ -4,15 +4,6 @@ package mix;
 option java_package = "com.swp.mix";
 option java_outer_classname = "MixOuterClass";
 
-service SimpleRelay
-{
-    // send a cell without onion-encryption and receive all new cells based on
-    // the specified tokens in return
-    // call this anytime between end of round r and start of round r + 1
-    // (see "round_duration" and "round_waiting" from directory service)
-    rpc SendAndReceive(RelayRequest) returns (CellVector);
-}
-
 service Mix
 {
     // setup a circuit
@@ -122,16 +113,6 @@ message Cell
     //        use tokens < 2^63 for rendezvous tokens
     //        use tokens >= 2^63 for contact tokens
     bytes onion = 3;
-}
-
-message RelayRequest
-{
-    // send this cell (dummy if you have no real cell to send)
-    // for the simple relay, each client should use a unique circuit id and
-    // stick to it to avoid getting its own cells back
-    Cell cell = 1;
-    // receive cells with matching tokens in return
-    repeated fixed64 tokens = 2;
 }
 
 message LatePollRequest
