@@ -23,7 +23,7 @@ message Subscription
 }
 
 message CircuitSubscription {
-    fixed64 circuit_id = 1;
+    fixed32 circuit_id = 1;
     repeated fixed64 tokens = 2;
 }
 
