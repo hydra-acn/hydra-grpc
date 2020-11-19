@@ -43,14 +43,6 @@ service Mix
     //        contain the n tokens of the dropped cells at the front, 8 bytes each
     //        (rest is garbage)
     rpc LatePoll(LatePollRequest) returns (CellVector);
-
-    // syncronized forwarding of cells along circuits
-    // note: not for entry mixes
-    rpc Relay(stream Cell) returns (RelayAck);
-
-    // inject cell into downstream circuit, called by rendezvous mixes
-    // circuit id of the cell must be set accordingly before the call
-    rpc Inject(stream Cell) returns (InjectAck);
 }
 
 message SetupPacket
@@ -90,10 +82,6 @@ message SetupPacket
 }
 
 message SetupAck { }
-
-message RelayAck { }
-
-message InjectAck { }
 
 message Cell
 {

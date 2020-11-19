@@ -7,9 +7,6 @@ service Rendezvous
 {
     // end of setup phase: subscription at rendezvous nodes
     rpc Subscribe(Subscription) returns (SubscribeAck);
-
-    // relay cell via rendezvous nodes each round
-    rpc Publish(stream Cell) returns (PublishAck);
 }
 
 message Subscription
@@ -28,5 +25,3 @@ message CircuitSubscription {
 }
 
 message SubscribeAck { }
-
-message PublishAck { }
