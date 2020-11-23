@@ -43,6 +43,14 @@ service Mix
     //        contain the n tokens of the dropped cells at the front, 8 bytes each
     //        (rest is garbage)
     rpc LatePoll(LatePollRequest) returns (CellVector);
+
+    // if you use the same entry mix for epoch e and e + 1, you should use
+    // this method to combine the late poll for the last round of epoch e and
+    // sending for the first round of epoch e + 1 (it is more efficient
+    // than separately calling LatePoll(...) and SendAndReceive(...);
+    // in contrast to SendAndReceive(...) you will not receive cells for the new
+    // epoch e + 1 as you are only supposed to use this method in the first round
+    rpc SendAndLatePoll(SendAndLatePollRequest) returns (CellVector);
 }
 
 message SetupPacket
@@ -107,6 +115,11 @@ message LatePollRequest
 {
     // poll for any cells received on the specified circuits
     repeated fixed64 circuit_ids = 1;
+}
+
+message SendAndLatePollRequest {
+    Cell cell = 1;
+    repeated fixed64 circuit_ids = 2;
 }
 
 message CellVector
