@@ -7,7 +7,7 @@ option java_outer_classname = "DirectoryOuterClass";
 service Directory
 {
     // used by mixes to register themselves for the first time,
-    // includes a key exchange for 
+    // includes a key exchange for
     // authentication of updates
     rpc Register(RegisterRequest) returns (RegisterReply);
 
@@ -19,7 +19,7 @@ service Directory
 
     // query the directory service
     rpc QueryDirectory(DirectoryRequest) returns (DirectoryReply);
-    
+
     // send mix statistics for evaluation and storing to the directory service
     rpc SendStatistics(stream MixStatistics) returns (StatisticAck);
 }
@@ -90,13 +90,13 @@ message EpochInfo
     uint64 communication_start_time = 4;
     // attention: last round in each epoch is reserved for receiving only!
     uint32 number_of_rounds = 5;
-    // round duration = time between send and (expected) arrival at the
-    // contact's entry mix; after round r, the client may send cells for round
-    // r + 1 and receive cells of round r in return
-    uint32 round_duration = 6;
-    // time between two rounds, i.e. sending for round r + 1 should be done
-    // within this time frame
-    uint32 round_waiting = 7;
+    // round duration = time (in seconds) between send and (expected) arrival
+    // at the contact's entry mix; after round r, the client may send cells for
+    // round r + 1 and receive cells of round r in return
+    double round_duration = 6;
+    // time (in seconds) between two rounds, i.e. sending for round r + 1
+    // should be done within this time frame
+    double round_waiting = 7;
 
     // the actual directory
     repeated MixInfo mixes = 8;
@@ -121,7 +121,7 @@ message MixInfo
 
 message MixStatistics
 {
-    uint32 epoch_no = 1;	
+    uint32 epoch_no = 1;
     string fingerprint = 2;
     bytes auth_tag = 3;
     // actual statistics
