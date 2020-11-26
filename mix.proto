@@ -51,6 +51,9 @@ service Mix
     // in contrast to SendAndReceive(...) you will not receive cells for the new
     // epoch e + 1 as you are only supposed to use this method in the first round
     rpc SendAndLatePoll(SendAndLatePollRequest) returns (CellVector);
+
+    // update (or add) the firebase token for a circuit
+    rpc UpdateFirebaseToken(FirebaseUpdate) returns (FirebaseUpdateAck);
 }
 
 message SetupPacket
@@ -117,7 +120,8 @@ message LatePollRequest
     repeated fixed64 circuit_ids = 1;
 }
 
-message SendAndLatePollRequest {
+message SendAndLatePollRequest
+{
     Cell cell = 1;
     repeated fixed64 circuit_ids = 2;
 }
@@ -126,3 +130,12 @@ message CellVector
 {
     repeated Cell cells = 1;
 }
+
+message FirebaseUpdate
+{
+    fixed32 epoch_no = 1;
+    fixed64 circuit_id = 2;
+    string token = 3;
+}
+
+message FirebaseUpdateAck { }
