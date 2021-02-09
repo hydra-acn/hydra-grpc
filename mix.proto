@@ -61,7 +61,7 @@ message SetupPacket
     uint32 epoch_no = 1;
     // circuit id must be random to minimize chance of collisions
     fixed64 circuit_id = 2;
-    // client's public x448 DH key for the current layer (56 bytes);
+    // client's public DH key for the current layer (56 bytes x448 OR 32 bytes x22519);
     // let the shared secret be s -> derive keys for symmetric ciphers using the
     // HKDF construction from RFC 5869 with SHA256 as hash function as follows:
     // (signature is hkdf(master_key: [uint8], salt: [uint8], info: uint8)
@@ -82,7 +82,7 @@ message SetupPacket
     //        http://www.tcpipguide.com/free/t_IPv6IPv4AddressEmbedding-2.htm
     //        example: 8.8.8.8 -> ::0xFFFF::8.8.8.8
     //      * 16 bit port information for next hop, little-endian order
-    //      * 56 byte x448 DH key for the next layer
+    //      * 56 byte x448 OR 32 byte x25519 DH key for the next layer
     //      * 96 bit nonce for the next layer
     //      * 128 bit authentication tag for the next layer
     //      * next layer -> recurse
