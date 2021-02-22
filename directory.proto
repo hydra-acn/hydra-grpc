@@ -100,6 +100,11 @@ message EpochInfo
 
     // the actual directory
     repeated MixInfo mixes = 8;
+
+    // contact service address in big endian order
+    bytes contact_service_addr = 9;
+    // contact service port (remark: protobuf does not support uint16)
+    uint32 contact_service_port = 10;
 }
 
 message MixInfo
@@ -130,4 +135,4 @@ message MixStatistics
     repeated uint32 avg_processing_time_per_layer = 6;
 }
 
-message StatisticAck{}
+message StatisticAck { }
