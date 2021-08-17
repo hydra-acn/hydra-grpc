@@ -87,7 +87,8 @@ message SetupPacket
     //      * 128 bit authentication tag for the next layer
     //      * next layer -> recurse
     // note: length of the onion field must be
-    //        256 * 8 byte + (l - 1) * 102 byte, with l = path length
+    //      * for x448: 256 * 8 byte + (l - 1) * 102 byte, with l = path length
+    //      * for x25519: 256 * 8 byte + (l - 1) * 78 byte, with l = path length
     // when sending to the entry mix
     bytes onion = 6;
 }
